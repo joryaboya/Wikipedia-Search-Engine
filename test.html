@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wikipedia Searchin</title>
+    <link rel="stylesheet" href="./mystyles.css">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class = "header-wrap">
+        <h1 id="title">search wikipedia:</h1>
+        <div>
+            <a class="white-text" href="https://en.wikipedia.org/wiki/Special:Random" target="_blank"><h4>random wikipedia button</h4></a>
+        </div>
+        <form action = "">
+            <input id = "queryWiki" type="search" placeholder="Enter your search here...">
+            <button type="button" class="fa fa-search"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Antu_dialog-icon-preview.svg/1280px-Antu_dialog-icon-preview.svg.png" alt="" width="30px"></button>
+        </form>
+    </div>
+
+    
+
+    <div id="search-results-container"></div>
+    
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const outerDiv = document.getElementById("search-results-container");
+       
+
+        const button1 = document.querySelector('.fa-search')
+
+        const randButton = document.querySelector('.random-button')
+
+
+
+        button1.addEventListener('click', getData)
+
+        
+
+        function getData(e){
+            e.preventDefault()
+            let input = document.getElementById("queryWiki")
+            input = input.value
+            console.log(input)
+            searchFunction(input)
+        }
+       
+        function append(parent, el) {
+            return parent.appendChild(el);
+        }
+
+        function createNode(element) {
+            return document.createElement(element);
+        }
+
+        const searchFunction = async (query)=>{
+            try{
+                let headWrap = document.getElementsByClassName("header-wrap")
+                headWrap.position = "absolute";
+                headWrap.top = "0px"
+                // get country is the response object which you can access the data using .data
+                let response = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=20&srsearch=${query}`)
+                let data = await response.json()
+                console.log(data)
+
+                let resultArr = data.query.search;
+                resultArr.map(entry => {
+
+                    let wikiEntryDiv = createNode('div');
+                    wikiEntryDiv.id = 'wikiEntryDiv';
+
+                    
+
+                    let wikiEntryAtag = createNode('a');
+                    wikiEntryAtag.href = `https://en.wikipedia.org/wiki/${entry.title}`;
+
+                    let h3Name = createNode('h3');
+                    h3Name.innerHTML = entry.title;
+
+                    let pSnippet = createNode('p');
+                    pSnippet.innerHTML = `${entry.snippet}`;
+
+                    
+
+                    append(wikiEntryDiv, wikiEntryAtag);
+                    append(wikiEntryAtag, h3Name);
+                    append(wikiEntryDiv, pSnippet)
+                    
+                    
+                    append(outerDiv, wikiEntryDiv);
+                    
+                })                    
+            }
+            catch(error) {
+                console.log(error);
+            };
+        }
+    </script>
+</body>
+</html>
