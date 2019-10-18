@@ -1,2 +1,2 @@
 # Wikipedia-Search-Engine
-![](https://wikipediasearcher.netlify.com/)
+[Wikipedia Searcher](https://wikipediasearcher.netlify.com/)
